@@ -19,7 +19,7 @@ namespace CapaPresentacionAdmin.Controllers
         {
             return View();
         }
-
+         
         [HttpGet]
         public JsonResult ListarUsuarios()
         {
@@ -27,7 +27,7 @@ namespace CapaPresentacionAdmin.Controllers
 
             olista = new CN_Usuarios().Listar();
 
-            return Json(olista, JsonRequestBehavior.AllowGet);
+            return Json(new { data = olista } , JsonRequestBehavior.AllowGet);
         }
     }
 }
