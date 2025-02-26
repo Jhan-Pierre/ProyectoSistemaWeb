@@ -51,20 +51,20 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Usuarios</h1>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body g-2">
+            <div class="modal-body">
                 <input id="txtid" type="text" value="0"/>
-                <div class="row">
+                <div class="row g-2">
                     <div class="col-sm-6">
                         <label for="txtnombres" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" id="txtnombres">
+                        <input type="text" class="form-control" id="txtnombres" autocomplete="off">
                     </div>
                     <div class="col-sm-6">
                         <label for="txtapellidos" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="txtapellidos">
+                        <input type="text" class="form-control" id="txtapellidos" autocomplete="off">
                     </div>
                     <div class="col-sm-6">
                         <label for="txtcorreo" class="form-label">Correo</label>
-                        <input type="email" class="form-control" id="txtcorreo">
+                        <input type="email" class="form-control" id="txtcorreo" autocomplete="off">
                     </div>
                     <div class="col-sm-6">
                         <label for="cboactivo" class="form-label">Activo</label>
@@ -72,6 +72,13 @@
                             <option value="1">Si</option>
                             <option value="0">No</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div id="mensajError" class="alert alert-danger" role="alert">
+                            A simple danger alert—check it out!
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,6 +138,7 @@
             $("#txtapellidos").val("");
             $("#txtcorreo").val("");
             $("#cboactivo").val(1);
+            $("#mensajError").hide();
 
             if (json != null) {
                 $("#txtid").val(json.IdUsuario);
@@ -155,15 +163,42 @@
                 Apellidos: $("#txtapellidos").val(),
                 Correo: $("#txtcorreo").val(),
                 Nombres: $("#txtnombres").val()
-            };
-
-            if (Usuario.IdUsuario == 0) {
-                tabladata.row.add(Usuario).draw(false);
-            } else {
-                tabladata.row(filaSeleccionada).data(Usuario).draw(false);
             }
 
-            $("#FormModal").modal("hide");
+            jQuery.ajax({
+                url: "@Url.Action("GuardarUsuario", "Home")",
+                type: "POST",
+                data: JSON.stringify({ objeto: Usuario }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    // USUARIO NUEVO
+                    if (Usuario.IdUsuario == 0) {
+                        if (data.resultado != 0) {
+                            Usuario.IdUsuario = data.resultado;
+                            tabladata.row.add(Usuario).draw(false);
+                            $("#FormModal").modal("hide");
+                        } else {
+                            $("#mensajError").text(data.mensaje);
+                            $("#mensajError").show();
+                        }
+                    } else {
+                        if (data.resultado) {
+                            tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+                            filaSeleccionada = null;
+                            $("#FormModal").modal("hide");
+                        } else {
+                            $("#mensajeError").text(data.mensaje);
+                            $("#mensajeError").show();
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                },
+                beforeSend: function () { }
+            });
         }
 
     </script>
