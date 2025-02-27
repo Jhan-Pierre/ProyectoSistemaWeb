@@ -151,7 +151,7 @@ create proc sp_EditarMarca(
 @Descripcion varchar(100),
 @Activo bit,
 @Mensaje varchar(500) output,
-@Resultado bit output
+@Resultado int output
 )
 as
 begin
@@ -168,9 +168,6 @@ begin
 	else
 	 set @Mensaje = 'La marca ya existe'
 end
-
-
-
 GO
 
 
