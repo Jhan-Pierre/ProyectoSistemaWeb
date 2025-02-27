@@ -118,7 +118,7 @@ namespace CapaPresentacionAdmin.Controllers
 
         // +++++++++ PRODUCTO +++++++++++++++
         #region PRODUCTO
-        [HttpPost]
+        [HttpGet]
         public JsonResult ListarProducto()
         {
             List<Producto> olista = new List<Producto>();
