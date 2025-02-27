@@ -289,3 +289,17 @@ begin
         set @Mensaje = 'El producto se encuentra relacionado a una venta'
 end
 go
+
+--- DASHBOARD SP
+CREATE PROCEDURE sp_ReporteDashboard
+AS
+BEGIN
+    SELECT 
+        (SELECT COUNT(*) FROM CLIENTE) AS TotalCliente,
+        (SELECT ISNULL(SUM(cantidad), 0) FROM DETALLE_VENTA) AS TotalVenta,
+        (SELECT COUNT(*) FROM PRODUCTO) AS TotalProducto;
+END;
+GO
+
+EXEC sp_ReporteDashboard;
+GO
