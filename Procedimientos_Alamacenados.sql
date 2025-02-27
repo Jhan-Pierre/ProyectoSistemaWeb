@@ -207,3 +207,85 @@ SELECT @Mensaje AS Mensaje, @Resultado AS Resultado;
 
 -- Verificar si la marca fue editada
 SELECT * FROM MARCA WHERE IdMarca = 1;
+go
+
+--- PRODUCTO SP
+create proc sp_RegistrarProducto(
+    @Nombre varchar(100),
+    @Descripcion varchar(100),
+    @IdMarca varchar(100),
+    @IdCategoria varchar(100),
+    @Precio decimal(10,2),
+    @Stock int,
+    @Activo bit,
+    @Mensaje varchar(500) output,
+    @Resultado int output
+)
+as
+begin
+    SET @Resultado = 0
+    IF NOT EXISTS (SELECT * FROM PRODUCTO WHERE Nombre = @Nombre)
+    begin
+        insert into PRODUCTO(Nombre, Descripcion, IdMarca, IdCategoria, Precio, Stock, Activo) 
+        values (@Nombre, @Descripcion, @IdMarca, @IdCategoria, @Precio, @Stock, @Activo)
+
+        SET @Resultado = scope_identity()
+    end
+    else
+        SET @Mensaje = 'El producto ya existe'
+end
+go
+
+create proc sp_EditarProducto(
+    @IdProducto int,
+    @Nombre varchar(100),
+    @Descripcion varchar(100),
+    @IdMarca varchar(100),
+    @IdCategoria varchar(100),
+    @Precio decimal(10,2),
+    @Stock int,
+    @Activo bit,
+    @Mensaje varchar(500) output,
+    @Resultado bit output
+)
+as
+begin
+    SET @Resultado = 0
+    IF NOT EXISTS (SELECT * FROM PRODUCTO WHERE Nombre = @Nombre and IdProducto != @IdProducto)
+    begin
+        update PRODUCTO set
+            Nombre = @Nombre,
+            Descripcion = @Descripcion,
+            IdMarca = @IdMarca,
+            IdCategoria = @IdCategoria,
+            Precio = @Precio,
+            Stock = @Stock,
+            Activo = @Activo
+        where IdProducto = @IdProducto
+
+        SET @Resultado = 1
+    end
+    else
+        SET @Mensaje = 'El producto ya existe'
+end
+go
+
+create proc sp_EliminarProducto(
+    @IdProducto int,
+    @Mensaje varchar(500) output,
+    @Resultado bit output
+)
+as
+begin
+    SET @Resultado = 0
+    IF NOT EXISTS (select * from DETALLE_VENTA dv
+    inner join PRODUCTO p on p.IdProducto = dv.IdProducto
+    where p.IdProducto = @IdProducto)
+    begin
+        delete top (1) from PRODUCTO where IdProducto = @IdProducto
+        SET @Resultado = 1
+    end
+    else
+        set @Mensaje = 'El producto se encuentra relacionado a una venta'
+end
+go
