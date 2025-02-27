@@ -94,15 +94,13 @@ begin
 		update top (1) CATEGORIA Set
 		Descripcion = @Descripcion,
 		Activo = @Activo
-		where IdCategoria = @Resultado
+		where IdCategoria = @IdCategoria
 
 		SET @Resultado = 1
 	end
 	else
 	 set @Mensaje = 'La categoria ya existe'
 end
-
-
 GO
 
 create proc sp_EliminarCategoria(
