@@ -138,7 +138,7 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("delete top (1) from usuario where IdUsuario = @id", oconexion);
+                    SqlCommand cmd = new SqlCommand("delete top (1) from USUARIO where IdUsuario = @id", oconexion);
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.CommandType = CommandType.Text;
                     oconexion.Open();
@@ -162,7 +162,7 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("update usuario set clave = @nuevaclave , reestablecer = 0 where idusuario = @id", oconexion);
+                    SqlCommand cmd = new SqlCommand("update USUARIO set clave = @nuevaclave , reestablecer = 0 where idusuario = @id", oconexion);
                     cmd.Parameters.AddWithValue("@id", idusuario);
                     cmd.Parameters.AddWithValue("@nuevaclave", nuevaclave);
                     cmd.CommandType = CommandType.Text;
@@ -187,8 +187,8 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    SqlCommand cmd = new SqlCommand("update usuario set clave = @clave , reestablecer = 1 where idusuario = @id", oconexion);
-                    cmd.Parameters.AddWithValue("@idusuario", idusuario);
+                    SqlCommand cmd = new SqlCommand("update USUARIO set clave = @clave , reestablecer = 1 where idusuario = @id", oconexion);
+                    cmd.Parameters.AddWithValue("@id", idusuario);
                     cmd.Parameters.AddWithValue("@clave", clave);
                     cmd.CommandType = CommandType.Text;
                     oconexion.Open();
@@ -201,9 +201,6 @@ namespace CapaDatos
                 Mensaje = ex.Message;
             }
             return resultado;
-
         }
-
-
     }
 }

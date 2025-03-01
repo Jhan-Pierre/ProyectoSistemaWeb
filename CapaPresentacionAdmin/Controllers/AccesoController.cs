@@ -96,5 +96,32 @@ namespace CapaPresentacionAdmin.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult Reestablecer(string correo)
+        {
+            Usuario ousurio = new Usuario();
+
+            ousurio = new CN_Usuarios().Listar().Where(item => item.Correo == correo).FirstOrDefault();
+
+            if (ousurio == null)
+            {
+                ViewBag.Error = "No se encontro un usuario relacionado a ese correo";
+                return View();
+            }
+
+            string mensaje = string.Empty;
+            bool respuesta = new CN_Usuarios().ReestablecerClave(ousurio.IdUsuario, correo, out mensaje);
+
+            if (respuesta)
+            {
+                ViewBag.Error = null;
+                return RedirectToAction("Index", "Acceso");
+            }
+            else
+            {
+                ViewBag.Error = mensaje;
+                return View();
+            }
+        }
     }
 }
