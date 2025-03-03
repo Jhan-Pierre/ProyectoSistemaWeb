@@ -36,7 +36,7 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpPost]
-        public JsonResult ListarProducto(int idcategoria, int idmarca)
+        public JsonResult ListarProducto(int? idcategoria, int? idmarca)
         {
             List<Producto> lista = new List<Producto>();
 
@@ -44,7 +44,7 @@ namespace CapaPresentacionTienda.Controllers
 
             lista = new CN_Producto().Listar().Select(p => new Producto()
             {
-                IdProducto =p.IdProducto,
+                IdProducto = p.IdProducto,
                 Nombre = p.Nombre,
                 Descripcion = p.Descripcion,
                 oMarca = p.oMarca,
@@ -56,20 +56,17 @@ namespace CapaPresentacionTienda.Controllers
                 Extension = Path.GetExtension(p.NombreImagen),
                 Activo = p.Activo
             }).Where(p =>
-                p.oCategoria.IdCategoria == (idcategoria == 0 ? p.oCategoria.IdCategoria : idcategoria) &&
-                p.oMarca.IdMarca == (idmarca == 0 ? p.oMarca.IdMarca : idmarca) &&
-                p.Stock > 0  &&  p.Activo == true
+                (idcategoria == null || p.oCategoria.IdCategoria == idcategoria) &&
+                (idmarca == null || p.oMarca.IdMarca == idmarca) &&
+                p.Stock > 0 && p.Activo == true
             ).ToList();
-
 
             var jsonresult = Json(new { data = lista }, JsonRequestBehavior.AllowGet);
             jsonresult.MaxJsonLength = int.MaxValue;
 
             return jsonresult;
-
-
-
         }
+
 
 
     }
