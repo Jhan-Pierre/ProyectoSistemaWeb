@@ -17,6 +17,25 @@ namespace CapaPresentacionTienda.Controllers
             return View();
         }
 
+        public ActionResult DetalleProducto(int idproducto = 0)
+        {
+
+            Producto oProducto = new Producto();
+            bool conversion;
+
+
+            oProducto = new CN_Producto().Listar().Where(p => p.IdProducto == idproducto).FirstOrDefault();
+
+
+            if (oProducto != null)
+            {
+                oProducto.Base64 = CN_Recursos.ConvertirBase64(Path.Combine(oProducto.RutaImagen, oProducto.NombreImagen), out conversion);
+                oProducto.Extension = Path.GetExtension(oProducto.NombreImagen);
+            }
+
+            return View(oProducto);
+        }
+
         [HttpGet]
         public JsonResult ListaCategorias()
         {
@@ -36,7 +55,7 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpPost]
-        public JsonResult ListarProducto(int? idcategoria, int? idmarca)
+        public JsonResult ListarProducto(int idcategoria, int idmarca)
         {
             List<Producto> lista = new List<Producto>();
 
@@ -56,10 +75,11 @@ namespace CapaPresentacionTienda.Controllers
                 Extension = Path.GetExtension(p.NombreImagen),
                 Activo = p.Activo
             }).Where(p =>
-                (idcategoria == null || p.oCategoria.IdCategoria == idcategoria) &&
-                (idmarca == null || p.oMarca.IdMarca == idmarca) &&
+                p.oCategoria.IdCategoria == (idcategoria == 0 ? p.oCategoria.IdCategoria : idcategoria) &&
+                p.oMarca.IdMarca == (idmarca == 0 ? p.oMarca.IdMarca : idmarca) &&
                 p.Stock > 0 && p.Activo == true
             ).ToList();
+
 
             var jsonresult = Json(new { data = lista }, JsonRequestBehavior.AllowGet);
             jsonresult.MaxJsonLength = int.MaxValue;
