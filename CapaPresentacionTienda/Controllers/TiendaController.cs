@@ -112,7 +112,7 @@ namespace CapaPresentacionTienda.Controllers
         }
 
         [HttpGet]
-        public JsonResult CantidadCarrito()
+        public JsonResult CantidadEnCarrito()
         {
             int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
             int cantidad = new CN_Carrito().CantidadEnCarrito(idcliente);

@@ -21,7 +21,7 @@ namespace CapaDatos
                 {
                     SqlCommand cmd = new SqlCommand("sp_ExisteCarrito", oconexion);
                     cmd.Parameters.AddWithValue("IdCliente", idcliente);
-                    cmd.Parameters.AddWithValue("idproducto", idproducto);
+                    cmd.Parameters.AddWithValue("IdProducto", idproducto);
                     cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
 

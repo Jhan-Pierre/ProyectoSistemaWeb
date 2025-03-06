@@ -395,7 +395,7 @@ begin
 				if(@existecarrito = 1)
 					update CARRITO set Cantidad	= Cantidad + 1 where IdCliente = @IdCliente and IdProducto = @IdProducto
 				else
-					insert into CARRITO (IdCliente,IdProducto,Cantidad) values(@IdCliente,@IdProducto,104)
+					insert into CARRITO (IdCliente,IdProducto,Cantidad) values(@IdCliente,@IdProducto,1)
 
 				update PRODUCTO set Stock = Stock - 1 where IdProducto = @IdProducto
 			end
