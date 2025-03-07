@@ -106,7 +106,7 @@ namespace CapaDatos
 
                     SqlCommand cmd = new SqlCommand(query, oconexion);
                     cmd.Parameters.AddWithValue("@idprovincia", idprovincia);
-                    cmd.Parameters.AddWithValue("@iddepartamento", iddepartamento);
+                    cmd.Parameters.AddWithValue("@iddepartamento", iddepartamento); 
                     cmd.CommandType = CommandType.Text;
 
                     oconexion.Open();
