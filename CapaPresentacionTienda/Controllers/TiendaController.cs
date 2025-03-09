@@ -167,19 +167,24 @@ namespace CapaPresentacionTienda.Controllers
 
 
         [HttpPost]
-        public JsonResult EliminarCarrito(int idproducto)
+        public JsonResult EliminarCarrito(int? idproducto) // Permitir valores nulos
         {
-            int idcliente = ((Cliente)Session["Cliente"]).IdCliente;
-            bool respuesta = false;
+            if (idproducto == null)
+            {
+                return Json(new { respuesta = false, mensaje = "ID del producto inválido" });
+            }
 
-            string mensaje = string.Empty;
+            int idcliente = ((Cliente)Session["Cliente"])?.IdCliente ?? 0;
 
-            respuesta = new CN_Carrito().EliminarCarrito(idcliente, idproducto);
+            if (idcliente == 0)
+            {
+                return Json(new { respuesta = false, mensaje = "Cliente no autenticado" });
+            }
 
-            return Json(new { respuesta = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+            bool respuesta = new CN_Carrito().EliminarCarrito(idcliente, idproducto.Value);
+
+            return Json(new { respuesta = respuesta, mensaje = "" });
         }
-
-
 
         [HttpPost]
         public JsonResult ObtenerDepartamento()

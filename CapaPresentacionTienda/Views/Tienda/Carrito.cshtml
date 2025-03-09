@@ -181,7 +181,7 @@
                                 )
 
                             )
-                            
+
 
                         ).appendTo("#productos-carrito")
 
@@ -308,7 +308,109 @@
 
         }
 
+        $(document).on("click", ".btn-sumar", function () {
+            var div_contenedor = $(this).parent("div.d-flex");
 
+            var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+
+            var btn = $(this)
+
+            var idproducto = $(input_cantidad).data("oProducto").IdProducto;
+
+            jQuery.ajax({
+                url: '@Url.Action("OperacionCarrito","Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idproducto: idproducto, sumar :true}),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    $(btn).LoadingOverlay("hide")
+
+                    if (data.respuesta) {
+                        var cantidad = parseInt($(input_cantidad).val()) + 1;
+                        $(input_cantidad).val(cantidad)
+                        sumarTotal()
+                    } else {
+                         swal("",data.mensaje,"warning")
+                    }
+                },
+                beforeSend: function () {
+                    $(btn).LoadingOverlay("show")
+                },
+                error: function (error) {
+                    $(btn).LoadingOverlay("hide")
+                }
+            })
+        })
+
+
+
+        $(document).on("click", ".btn-restar", function () {
+            var div_contenedor = $(this).parent("div.d-flex");
+
+            var input_cantidad = $(div_contenedor).find("input.input-cantidad");
+
+            var btn = $(this)
+
+            var idproducto = $(input_cantidad).data("oProducto").IdProducto;
+
+            var cantidad = parseInt($(input_cantidad).val()) - 1;
+
+            if (cantidad >= 1) {
+                jQuery.ajax({
+                    url: '@Url.Action("OperacionCarrito","Tienda")',
+                    type: "POST",
+                    data: JSON.stringify({ idproducto: idproducto, sumar :false}),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                        $(btn).LoadingOverlay("hide")
+
+                        if (data.respuesta) {
+                            $(input_cantidad).val(cantidad)
+                            sumarTotal()
+                        } else {
+                            swal("", data.mensaje, "warning")
+                        }
+                    },
+                    beforeSend: function () {
+                        $(btn).LoadingOverlay("show")
+                    },
+                    error: function (error) {
+                        $(btn).LoadingOverlay("hide")
+                    }
+                })
+            }
+        })
+
+        $(document).on("click", ".btn-eliminar", function () {
+            var idproducto = $(this).closest(".card-producto").find("input.input-cantidad").data("oProducto").IdProducto;
+
+            if (!idproducto) {
+                console.error("ID del producto es inválido:", idproducto);
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("EliminarCarrito", "Tienda")',
+                type: "POST",
+                data: JSON.stringify({ idproducto: idproducto }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    if (response.respuesta) {
+                        location.reload(); // O actualiza la vista de alguna forma
+                    } else {
+                        alert("Error al eliminar el producto: " + response.mensaje);
+                    }
+                },
+                error: function (error) {
+                    console.error("Error en la petición AJAX", error);
+                }
+            });
+        });
 
     </script>
     
