@@ -119,6 +119,7 @@ namespace CapaPresentacionTienda.Controllers
             return Json(new { cantidad = cantidad }, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize]
         [HttpPost]
         public JsonResult ListarProductosCarrito()
         {
