@@ -460,7 +460,7 @@ begin
 		
 		BEGIN TRANSACTION OPERACION
 
-		update PRODUCTO set Stock = + @cantidadproducto where IdProducto = @IdProducto
+		update PRODUCTO set Stock = Stock + @cantidadproducto where IdProducto = @IdProducto
 		delete top (1) from CARRITO where IdCliente = @IdCliente and IdProducto = @IdProducto
 
 		COMMIT TRANSACTION OPERACION
