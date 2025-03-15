@@ -528,3 +528,19 @@ begin
 		rollback transaction registro
 	end catch
 end
+GO
+
+
+create FUNCTION fn_ListarCompra(
+@idcliente int
+)
+RETURNS TABLE
+AS
+RETURN
+(
+	SELECT p.RutaImagen,p.NombreImagen,p.Nombre,p.Precio,dv.Cantidad,dv.Total,v.IdTransaccion FROM DETALLE_VENTA DV
+	INNER JOIN PRODUCTO P ON P.IdProducto = DV.IdProducto
+	INNER JOIN VENTA V ON V.IdVenta = DV.IdVenta
+	where v.IdCliente =  @idcliente
+)
+GO
