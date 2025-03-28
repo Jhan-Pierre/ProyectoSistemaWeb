@@ -41,25 +41,27 @@ namespace CapaPresentacionTienda.Controllers
 
             if (objeto.Clave != objeto.ConfirmarClave)
             {
-                ViewBag.Error = "Las contraseñas no coinciden";
-                return View();
-
+                ViewBag.ShowRegister = true;
+                ViewBag.ErrorRegister = "Las contraseñas no coinciden";
+                return View("Index", objeto);
             }
 
             resultado = new CN_Cliente().Registrar(objeto, out mensaje);
 
             if (resultado > 0)
             {
-                ViewBag.Error = null;
+                ViewBag.ErrorRegister = null;
                 return RedirectToAction("Index", "Acceso");
             }
             else
             {
-                ViewBag.Error = null;
-                return View();
+                ViewBag.ShowRegister = true;
+                ViewBag.ErrorRegister = mensaje;
+                return View("Index", objeto);
             }
-
         }
+
+
         [HttpPost]
         public ActionResult Index(string correo, string clave)
         {
@@ -70,7 +72,7 @@ namespace CapaPresentacionTienda.Controllers
 
             if (oCliente == null)
             {
-                ViewBag.Error = "Correo o contraseña no son correctas";
+                ViewBag.ErrorLogin = "Correo o contraseña no son correctas";
                 return View();
             }
             else
